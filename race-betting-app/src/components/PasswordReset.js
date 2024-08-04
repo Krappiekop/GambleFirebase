@@ -1,29 +1,22 @@
-// src/components/Register.js
+// src/components/PasswordReset.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, firestore } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { auth } from '../firebase';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import { Container, TextField, Button, Typography } from '@mui/material';
 import SnackbarMessage from './SnackbarMessage';
 
-function Register() {
+function PasswordReset() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
+  const handlePasswordReset = async (e) => {
     e.preventDefault();
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      // Maak een Firestore document voor de gebruiker
-      await setDoc(doc(firestore, 'users', user.uid), {
-        email: user.email,
-        balance: 100 // of een andere startwaarde
-      });
-      navigate('/dashboard');
+      await sendPasswordResetEmail(auth, email);
+      setSnackbar({ open: true, message: 'Password reset email sent!', severity: 'success' });
+      navigate('/login');
     } catch (error) {
       setSnackbar({ open: true, message: error.message, severity: 'error' });
     }
@@ -31,8 +24,8 @@ function Register() {
 
   return (
     <Container maxWidth="sm">
-      <Typography variant="h3" gutterBottom>Register</Typography>
-      <form onSubmit={handleRegister}>
+      <Typography variant="h3" gutterBottom>Reset Password</Typography>
+      <form onSubmit={handlePasswordReset}>
         <TextField
           label="Email"
           variant="outlined"
@@ -42,18 +35,8 @@ function Register() {
           margin="normal"
           required
         />
-        <TextField
-          label="Password"
-          variant="outlined"
-          type="password"
-          fullWidth
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          margin="normal"
-          required
-        />
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Register
+          Send Reset Email
         </Button>
       </form>
       <SnackbarMessage
@@ -66,4 +49,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default PasswordReset;
