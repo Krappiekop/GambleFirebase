@@ -1,49 +1,60 @@
-// src/components/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Container, TextField, Button, Typography } from '@mui/material';
+import SnackbarMessage from './SnackbarMessage';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard'); // Redirect to dashboard after successful login
+      navigate('/dashboard');
     } catch (error) {
-      setError('Gebruikersnaam of wachtwoord niet herkend.');
-      console.error(error);
+      setSnackbar({ open: true, message: error.message, severity: 'error' });
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <Container maxWidth="sm">
+      <Typography variant="h3" gutterBottom>Login</Typography>
       <form onSubmit={handleLogin}>
-        <input
-          type="email"
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          margin="normal"
           required
         />
-        <input
+        <TextField
+          label="Password"
+          variant="outlined"
           type="password"
+          fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          margin="normal"
           required
         />
-        <button type="submit">Login</button>
+        <Button type="submit" variant="contained" color="primary" fullWidth>
+          Login
+        </Button>
       </form>
-      {error && <p>{error}</p>}
-    </div>
+      <SnackbarMessage
+        open={snackbar.open}
+        onClose={() => setSnackbar({ open: false, message: '', severity: '' })}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
+    </Container>
   );
 }
 
