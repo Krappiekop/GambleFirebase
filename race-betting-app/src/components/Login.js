@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Container, TextField, Button, Typography } from '@mui/material';
@@ -48,6 +48,15 @@ function Login() {
           Login
         </Button>
       </form>
+      <Button
+        component={Link}
+        to="/reset-password"
+        variant="text"
+        color="secondary"
+        fullWidth
+      >
+        Forgot Password?
+      </Button>
       <SnackbarMessage
         open={snackbar.open}
         onClose={() => setSnackbar({ open: false, message: '', severity: '' })}
