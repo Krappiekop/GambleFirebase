@@ -13,6 +13,7 @@ function Dashboard() {
   const [videoId, setVideoId] = useState('');
   const [bets, setBets] = useState([]);
   const [balance, setBalance] = useState(0);
+  const [displayName, setDisplayName] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +30,9 @@ function Dashboard() {
     try {
       const userDoc = await getDoc(doc(firestore, 'users', auth.currentUser.uid));
       if (userDoc.exists()) {
-        setBalance(userDoc.data().balance);
+        const userData = userDoc.data();
+        setBalance(userData.balance);
+        setDisplayName(userData.displayName);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -76,6 +79,7 @@ function Dashboard() {
       await addDoc(collection(firestore, 'bets'), {
         bet: betAmount,
         userId: auth.currentUser.uid,
+        displayName: displayName,
         timestamp: new Date()
       });
       await updateDoc(doc(firestore, 'users', auth.currentUser.uid), {
@@ -149,7 +153,7 @@ function Dashboard() {
       <List>
         {bets.map(bet => (
           <ListItem key={bet.id}>
-            <ListItemText primary={`$${bet.bet}`} />
+            <ListItemText primary={`${bet.displayName}: $${bet.bet}`} />
           </ListItem>
         ))}
       </List>
