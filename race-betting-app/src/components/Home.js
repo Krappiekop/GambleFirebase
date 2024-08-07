@@ -6,7 +6,7 @@ import { Container, Typography, Button } from '@mui/material';
 function Home() {
   return (
     <Container maxWidth="sm">
-      <Typography variant="h3" gutterBottom>Welcome to Race Betting App</Typography>
+      <Typography variant="h3" gutterBottom>Race Betting App</Typography>
       <Button
         component={Link}
         to="/register"
