@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile'; // Importeer de Profile component
 import PasswordReset from './components/PasswordReset'; // Importeer de PasswordReset component
+import GameSelect from './components/GameSelect'; // Importeer de GameSelection component
 import { ThemeProvider, createTheme } from '@mui/material/styles'; // Darkmode
 import { CssBaseline, Container, Switch, FormControlLabel } from '@mui/material'; // Darkmode
 import './App.css';
@@ -41,6 +42,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} /> {/* Voeg de Profile route toe */}
           <Route path="/reset-password" element={<PasswordReset />} /> {/* Voeg de PasswordReset route toe */}
+          <Route path="/games" element={<GameSelect />} /> {/* Voeg de GameSelection route toe */}
           </Routes>
         </Container>
       </Router>

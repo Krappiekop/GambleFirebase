@@ -15,7 +15,7 @@ function Login() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      navigate('/games');
     } catch (error) {
       setSnackbar({ open: true, message: error.message, severity: 'error' });
     }
