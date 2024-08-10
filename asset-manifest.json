@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/GambleFirebase/static/css/main.f855e6bc.css",
-    "main.js": "/GambleFirebase/static/js/main.b89bf19c.js",
+    "main.js": "/GambleFirebase/static/js/main.d1804183.js",
     "static/js/453.2a2e37fc.chunk.js": "/GambleFirebase/static/js/453.2a2e37fc.chunk.js",
     "index.html": "/GambleFirebase/index.html",
     "main.f855e6bc.css.map": "/GambleFirebase/static/css/main.f855e6bc.css.map",
-    "main.b89bf19c.js.map": "/GambleFirebase/static/js/main.b89bf19c.js.map",
+    "main.d1804183.js.map": "/GambleFirebase/static/js/main.d1804183.js.map",
     "453.2a2e37fc.chunk.js.map": "/GambleFirebase/static/js/453.2a2e37fc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.b89bf19c.js"
+    "static/js/main.d1804183.js"
   ]
 }
