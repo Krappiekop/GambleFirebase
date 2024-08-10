@@ -43,7 +43,7 @@ function GameSelection() {
   return (
     <Container>
       <Typography variant="h3" gutterBottom>Welcome, {displayName}</Typography>
-      <Typography variant="h5" gutterBottom>Balance: ${balance}</Typography>
+      <Typography variant="h5" gutterBottom>Balance: ${balance.toFixed(2)}</Typography>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Button variant="contained" color="primary" onClick={handleLogout}>Logout</Button>
         <Button variant="contained" color="secondary" onClick={() => navigate('/profile')}>Profile</Button>
@@ -51,12 +51,11 @@ function GameSelection() {
       <Typography variant="h4" gutterBottom>Select a Game</Typography>
       <Box display="flex" flexDirection="column" alignItems="center">
         <Button variant="contained" color="primary" onClick={() => navigate('/dashboard')} style={{ marginBottom: '10px' }}>
-          Race Betting
+          Marble Race
         </Button>
-        {/* Voeg hier andere spellen toe */}
-        {/* <Button variant="contained" color="primary" onClick={() => navigate('/another-game')} style={{ marginBottom: '10px' }}>
-          Another Game
-        </Button> */}
+        <Button variant="contained" color="primary" onClick={() => navigate('/guess-the-number')} style={{ marginBottom: '10px' }}>
+          Guess the Number
+        </Button>
       </Box>
     </Container>
   );
