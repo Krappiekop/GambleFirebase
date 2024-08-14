@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
-import { getDoc, updateDoc, doc } from 'firebase/firestore';
+import { getDoc, updateDoc, doc, addDoc, collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { Container, Typography, Button, IconButton, Snackbar, Alert } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -9,7 +9,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import Leaderboard from './Leaderboard';
 import chestClosed from './assets/chest_closed.png';
 import chestOpen from './assets/chest_open.png';
-import './DailyCash.css'; // Import the CSS file
+import DailyCashLog from './DailyCashLog';
+import './DailyCash.css';
 
 function DailyCash() {
   const [balance, setBalance] = useState(0);
@@ -17,7 +18,8 @@ function DailyCash() {
   const [cooldown, setCooldown] = useState(0);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [rewardAmount, setRewardAmount] = useState(0);
-  const [showCoins, setShowCoins] = useState(false); // State to handle coin animation
+  const [showCoins, setShowCoins] = useState(false); 
+  const [rounds, setRounds] = useState([]); // Log data
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -28,6 +30,15 @@ function DailyCash() {
       console.error('Error logging out: ', error);
     }
   };
+
+  useEffect(() => {
+    if (!auth.currentUser) {
+      navigate('/login');
+    } else {
+      loadUserData();
+      fetchRounds();
+    }
+  }, [navigate]);
 
   const loadUserData = async () => {
     try {
@@ -40,7 +51,7 @@ function DailyCash() {
         const currentTime = Date.now();
         const timeElapsed = Math.floor((currentTime - lastOpened) / 1000);
 
-        if (timeElapsed < 600) { // 600 seconds = 10 minutes
+        if (timeElapsed < 600) { 
           setCooldown(600 - timeElapsed);
           setIsOpened(true);
         }
@@ -50,13 +61,21 @@ function DailyCash() {
     }
   };
 
-  useEffect(() => {
-    if (!auth.currentUser) {
-      navigate('/login');
-    } else {
-      loadUserData();
-    }
-  }, [navigate]);
+  const fetchRounds = () => {
+    const roundsQuery = query(
+      collection(firestore, 'dailyCashRounds'),
+      orderBy('timestamp', 'desc'),
+      limit(10)
+    );
+
+    onSnapshot(roundsQuery, (snapshot) => {
+      const roundsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setRounds(roundsData);
+    });
+  };
 
   useEffect(() => {
     let timer;
@@ -77,9 +96,9 @@ function DailyCash() {
       const newBalance = balance + reward;
       setBalance(newBalance);
       setIsOpened(true);
-      setCooldown(10); // Set cooldown to 10 minutes (600 seconds) - Change to 10800 for 3 hours
+      setCooldown(108000);
       setRewardAmount(reward);
-      setShowCoins(true); // Show coins animation
+      setShowCoins(true); 
 
       const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
       await updateDoc(userDocRef, { 
@@ -87,15 +106,28 @@ function DailyCash() {
         lastChestOpened: new Date()
       });
 
+      const user = auth.currentUser;
+      let displayName = user.displayName;
+
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        displayName = userDoc.data().displayName || displayName;
+      }
+
+      await addDoc(collection(firestore, 'dailyCashRounds'), {
+        rewardAmount: reward,
+        displayName: displayName || 'Anonymous',
+        timestamp: new Date()
+      });
+
       setShowSnackbar(true);
       
-      // Hide coins after animation ends
       setTimeout(() => {
         setShowCoins(false);
       }, 1000);
       
     } catch (error) {
-      console.error('Error opening chest:', error);
+      console.error('Error opening chest or logging reward:', error);
     }
   };
 
@@ -114,6 +146,7 @@ function DailyCash() {
 
   return (
     <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center', position: 'relative', paddingBottom: '40px' }}>
+      <DailyCashLog rounds={rounds} />
       <Leaderboard />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '20px' }}>
         <ArrowBackIcon onClick={() => navigate('/games')} style={{ cursor: 'pointer' }} />
