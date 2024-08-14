@@ -48,7 +48,7 @@ function GameSelection() {
 
   return (
     <Container>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mt={4} mb={4}>
         <Typography variant="h4">Welcome, {displayName}</Typography>
         <Box display="flex" alignItems="center">
           <Typography variant="h6" style={{ marginRight: '20px' }}>Balance: ${balance.toFixed(2)}</Typography>
@@ -61,7 +61,114 @@ function GameSelection() {
       
       <Divider style={{ marginBottom: '20px' }} />
 
-      <Grid container spacing={3} justifyContent="center">
+      {/* Daily Category */}
+      <Typography variant="h5" gutterBottom>Daily</Typography>
+      <Divider style={{ marginBottom: '10px' }} />
+      <Grid container spacing={3} justifyContent="flex-start">
+        <Grid item xs={12} sm={6} md={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            // Voeg hier de route toe wanneer beschikbaar
+            style={{
+              width: '100%',
+              height: '150px',
+              fontSize: '18px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              padding: '10px'
+            }}
+          >
+            DAILY CASH
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            // Voeg hier de route toe wanneer beschikbaar
+            style={{
+              width: '100%',
+              height: '150px',
+              fontSize: '18px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              padding: '10px'
+            }}
+          >
+            FREE SPIN
+          </Button>
+        </Grid>
+      </Grid>
+
+      {/* Casino Category */}
+      <Typography variant="h5" gutterBottom mt={4}>Casino</Typography>
+      <Divider style={{ marginBottom: '10px' }} />
+      <Grid container spacing={3} justifyContent="flex-start">
+        <Grid item xs={12} sm={6} md={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate('/guess-the-number')}
+            style={{
+              width: '100%',
+              height: '150px',
+              backgroundImage: 'url(/path_to_guess_the_number_image.jpg)',
+              backgroundSize: 'cover',
+              fontSize: '18px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              padding: '10px'
+            }}
+          >
+            GUESS THE NUMBER
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            // Voeg hier de route toe wanneer beschikbaar
+            style={{
+              width: '100%',
+              height: '150px',
+              fontSize: '18px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              padding: '10px'
+            }}
+          >
+            ROULETTE
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            // Voeg hier de route toe wanneer beschikbaar
+            style={{
+              width: '100%',
+              height: '150px',
+              fontSize: '18px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              padding: '10px'
+            }}
+          >
+            HIGHER OR LOWER
+          </Button>
+        </Grid>
+      </Grid>
+
+      {/* Race Category */}
+      <Typography variant="h5" gutterBottom mt={4}>Race</Typography>
+      <Divider style={{ marginBottom: '10px' }} />
+      <Grid container spacing={3} justifyContent="flex-start">
         <Grid item xs={12} sm={6} md={4}>
           <Button
             variant="contained"
@@ -86,12 +193,10 @@ function GameSelection() {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => navigate('/guess-the-number')}
+            // Voeg hier de route toe wanneer beschikbaar
             style={{
               width: '100%',
               height: '150px',
-              backgroundImage: 'url(/path_to_guess_the_number_image.jpg)',
-              backgroundSize: 'cover',
               fontSize: '18px',
               display: 'flex',
               justifyContent: 'flex-end',
@@ -99,10 +204,33 @@ function GameSelection() {
               padding: '10px'
             }}
           >
-            GUESS THE NUMBER
+            PAARDENRACE
           </Button>
         </Grid>
-        {/* Hier kun je later meer spelopties toevoegen */}
+      </Grid>
+
+      {/* Card Games Category */}
+      <Typography variant="h5" gutterBottom mt={4}>Card Games</Typography>
+      <Divider style={{ marginBottom: '10px' }} />
+      <Grid container spacing={3} justifyContent="flex-start" style={{ marginBottom: '40px' }}>
+        <Grid item xs={12} sm={6} md={4}>
+          <Button
+            variant="contained"
+            color="primary"
+            // Voeg hier de route toe wanneer beschikbaar
+            style={{
+              width: '100%',
+              height: '150px',
+              fontSize: '18px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              padding: '10px'
+            }}
+          >
+            UNO
+          </Button>
+        </Grid>
       </Grid>
 
       <Leaderboard drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} /> {/* Gebruik het Leaderboard component */}
