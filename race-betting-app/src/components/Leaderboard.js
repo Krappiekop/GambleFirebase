@@ -55,7 +55,7 @@ function Leaderboard() {
                     {player.rank}. {player.displayName}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    Balance: ${player.balance.toLocaleString()}
+                    ${player.balance.toLocaleString()}
                   </Typography>
                 </CardContent>
               </Card>

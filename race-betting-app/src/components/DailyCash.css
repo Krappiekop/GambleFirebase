@@ -1,0 +1,32 @@
+@keyframes coin-animation {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-150px) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-300px) scale(1);
+    opacity: 0;
+  }
+}
+
+.coin {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: url('./assets/coin-image.png') no-repeat center center;
+  background-size: contain;
+  animation: coin-animation 1.5s ease-in-out forwards;
+}
+
+.coin-container {
+  position: relative;
+  display: inline-block;
+}
+
+.hidden {
+  display: none;
+}

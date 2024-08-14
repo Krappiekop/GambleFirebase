@@ -210,10 +210,8 @@ function GuessTheNumber() {
     <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center', position: 'relative', paddingBottom: '40px' }}>
       <Log rounds={rounds} />
       <Leaderboard />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/games')}>
-          Back
-        </Button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '20px' }}>
+      <ArrowBackIcon onClick={() => navigate('/games')} style={{ cursor: 'pointer' }} />
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <IconButton onClick={() => navigate('/profile')}>
             <AccountCircleIcon />
@@ -228,7 +226,7 @@ function GuessTheNumber() {
       <Typography variant="h1" gutterBottom style={{ margin: '40px 0' }}>
         {randomNumber}
       </Typography>
-      <Typography variant="h5" gutterBottom style={{ marginBottom: '30px' }}>Balance: ${balance}</Typography>
+      <Typography variant="h5" gutterBottom style={{ marginBottom: '30px' }}>${balance}</Typography>
       <Grid container spacing={2} justifyContent="center" style={{ marginBottom: '20px' }}>
         <ChipSelection selectedChip={selectedChip} onSelectChip={setSelectedChip} />
       </Grid>

@@ -4,7 +4,7 @@ import { auth, firestore } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
 import { Button, Container, Typography, Box, IconButton, Grid, Divider } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Leaderboard from './Leaderboard'; // importeer het leaderboard component
+import Leaderboard from './Leaderboard';
 
 function GameSelection() {
   const [balance, setBalance] = useState(0);
@@ -51,7 +51,7 @@ function GameSelection() {
       <Box display="flex" justifyContent="space-between" alignItems="center" mt={4} mb={4}>
         <Typography variant="h4">Welcome, {displayName}</Typography>
         <Box display="flex" alignItems="center">
-          <Typography variant="h6" style={{ marginRight: '20px' }}>Balance: ${balance.toFixed(2)}</Typography>
+          <Typography variant="h6" style={{ marginRight: '20px' }}>${balance}</Typography>
           <IconButton onClick={() => navigate('/profile')}>
             <AccountCircleIcon />
           </IconButton>
@@ -69,7 +69,7 @@ function GameSelection() {
           <Button
             variant="contained"
             color="primary"
-            // Voeg hier de route toe wanneer beschikbaar
+            onClick={() => navigate('/daily-cash')}
             style={{
               width: '100%',
               height: '150px',
@@ -77,17 +77,20 @@ function GameSelection() {
               display: 'flex',
               justifyContent: 'flex-end',
               alignItems: 'flex-end',
-              padding: '10px'
+              padding: '10px',
+              backgroundImage: `url(${process.env.PUBLIC_URL}/assets/chest_closed_NoBG.png)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
             }}
           >
-            DAILY CASH
+            DAILY CHEST
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <Button
             variant="contained"
             color="primary"
-            // Voeg hier de route toe wanneer beschikbaar
             style={{
               width: '100%',
               height: '150px',
@@ -95,7 +98,11 @@ function GameSelection() {
               display: 'flex',
               justifyContent: 'flex-end',
               alignItems: 'flex-end',
-              padding: '10px'
+              padding: '10px',
+              backgroundImage: `url(${process.env.PUBLIC_URL}/assets/Wheel_of_Fortune.png)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
             }}
           >
             FREE SPIN
@@ -115,8 +122,6 @@ function GameSelection() {
             style={{
               width: '100%',
               height: '150px',
-              backgroundImage: 'url(/path_to_guess_the_number_image.jpg)',
-              backgroundSize: 'cover',
               fontSize: '18px',
               display: 'flex',
               justifyContent: 'flex-end',
@@ -131,7 +136,6 @@ function GameSelection() {
           <Button
             variant="contained"
             color="primary"
-            // Voeg hier de route toe wanneer beschikbaar
             style={{
               width: '100%',
               height: '150px',
@@ -149,7 +153,6 @@ function GameSelection() {
           <Button
             variant="contained"
             color="primary"
-            // Voeg hier de route toe wanneer beschikbaar
             style={{
               width: '100%',
               height: '150px',
@@ -177,8 +180,6 @@ function GameSelection() {
             style={{
               width: '100%',
               height: '150px',
-              backgroundImage: 'url(/path_to_marble_race_image.jpg)',
-              backgroundSize: 'cover',
               fontSize: '18px',
               display: 'flex',
               justifyContent: 'flex-end',
@@ -193,7 +194,6 @@ function GameSelection() {
           <Button
             variant="contained"
             color="primary"
-            // Voeg hier de route toe wanneer beschikbaar
             style={{
               width: '100%',
               height: '150px',
@@ -217,7 +217,6 @@ function GameSelection() {
           <Button
             variant="contained"
             color="primary"
-            // Voeg hier de route toe wanneer beschikbaar
             style={{
               width: '100%',
               height: '150px',
@@ -233,7 +232,7 @@ function GameSelection() {
         </Grid>
       </Grid>
 
-      <Leaderboard drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} /> {/* Gebruik het Leaderboard component */}
+      <Leaderboard drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
     </Container>
   );
 }
