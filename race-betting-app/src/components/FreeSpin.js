@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
-import { getDoc, doc, updateDoc, addDoc, collection } from 'firebase/firestore';
+import { getDoc, doc, updateDoc, addDoc, collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { Container, Typography, Button, IconButton, Snackbar, Alert } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import Leaderboard from './Leaderboard';
+import FreeSpinLog from './FreeSpinLog';
 import './FreeSpin.css';
-
 import wheelImage from './assets/wheel.png';
 
 function FreeSpin() {
@@ -17,6 +17,7 @@ function FreeSpin() {
   const [rotation, setRotation] = useState(0);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [rounds, setRounds] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,7 @@ function FreeSpin() {
       navigate('/login');
     } else {
       loadUserData();
+      fetchRounds();
     }
   }, [navigate]);
 
@@ -36,6 +38,22 @@ function FreeSpin() {
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
+  };
+
+  const fetchRounds = () => {
+    const roundsQuery = query(
+      collection(firestore, 'freeSpinRounds'),
+      orderBy('timestamp', 'desc'),
+      limit(10)
+    );
+
+    onSnapshot(roundsQuery, (snapshot) => {
+      const roundsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setRounds(roundsData);
+    });
   };
 
   const handleLogout = async () => {
@@ -52,11 +70,14 @@ function FreeSpin() {
     setIsSpinning(true);
 
     const prizes = [
-      { name: "$500", angle: 0, probability: 0.05 },
-      { name: "$250", angle: 45, probability: 0.10 },
-      { name: "$150", angle: 90, probability: 0.15 },
-      { name: "$100", angle: 135, probability: 0.25 },
-      { name: "$50", angle: 180, probability: 0.45 },
+      { name: "$2000", angle: 0, probability: 0.01 },
+      { name: "$1250", angle: 45, probability: 0.02 },
+      { name: "$750", angle: 90, probability: 0.05 },
+      { name: "$500", angle: 135, probability: 0.07 },
+      { name: "$200", angle: 180, probability: 0.10 },
+      { name: "$100", angle: 225, probability: 0.15 },
+      { name: "$50", angle: 270, probability: 0.25 },
+      { name: "$20", angle: 315, probability: 0.35 },
     ];
 
     const prize = getRandomPrize(prizes);
@@ -66,26 +87,34 @@ function FreeSpin() {
     setTimeout(async () => {
       setIsSpinning(false);
       const prizeAmount = parseInt(prize.name.replace('$', ''));
-
+    
       try {
-        const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
+        const user = auth.currentUser;
+        const userDocRef = doc(firestore, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        let displayName = user.displayName;
+
+        if (userDoc.exists()) {
+          displayName = userDoc.data().displayName || displayName;
+        }
+
         await updateDoc(userDocRef, {
           balance: balance + prizeAmount
         });
         setBalance(balance + prizeAmount);
-
+    
         setSnackbarMessage(`${prize.name} added to your balance!`);
         setShowSnackbar(true);
-
+    
         await addDoc(collection(firestore, 'freeSpinRounds'), {
           prize: prize.name,
-          displayName: auth.currentUser.displayName || 'Anonymous',
+          displayName: displayName || 'Anonymous',
           timestamp: new Date()
         });
       } catch (error) {
         console.error('Error updating balance or logging spin:', error);
       }
-    }, 5000); 
+    }, 5000);
   };
 
   const getRandomPrize = (prizes) => {
@@ -107,6 +136,7 @@ function FreeSpin() {
 
   return (
     <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center', position: 'relative', paddingBottom: '40px' }}>
+      <FreeSpinLog rounds={rounds} />
       <Leaderboard />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '20px' }}>
         <ArrowBackIcon onClick={() => navigate('/games')} style={{ cursor: 'pointer' }} />
