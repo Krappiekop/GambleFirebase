@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
 import { getDoc, doc, updateDoc, collection, addDoc, query, onSnapshot, orderBy, setDoc } from 'firebase/firestore';
-import { Container, Typography, Button, Grid, List, Card, CardContent, IconButton } from '@mui/material';
+import { Container, Typography, Button, Grid, IconButton, Snackbar, Alert } from '@mui/material';
 import ChipSelection from './ChipSelection';
-import moment from 'moment';
 import Leaderboard from './Leaderboard'; // Import the new Leaderboard component
+import Log from './Log'; // Import the new Log component
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CloseIcon from '@mui/icons-material/Close';
 
 function GuessTheNumber() {
   const [balance, setBalance] = useState(0);
@@ -17,6 +18,9 @@ function GuessTheNumber() {
   const [rounds, setRounds] = useState([]);
   const [randomNumber, setRandomNumber] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -185,20 +189,33 @@ function GuessTheNumber() {
       setBalance(balance + netPayout);
       setLastBet(selectedNumbers);
       setSelectedNumbers({});
+
+      // Show the Snackbar with the result
+      setSnackbarSeverity(netPayout >= totalBet ? 'success' : 'error');
+      setSnackbarMessage(
+        `${new Date().toLocaleTimeString()} - Bet: $${totalBet} on ${betNumbers.join(', ')} - Winning Number: ${generatedNumber} - Profit: $${netPayout - totalBet}`
+      );
+      setShowSnackbar(true);
+
     } catch (error) {
       console.error('Error starting round: ', error);
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setShowSnackbar(false);
+  };
+
   return (
-    <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
+    <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center', position: 'relative', paddingBottom: '40px' }}>
+      <Log rounds={rounds} />
       <Leaderboard />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/games')}>
           Back
         </Button>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton onClick={() => navigate('/profile')}>
+          <IconButton onClick={() => navigate('/profile')}>
             <AccountCircleIcon />
           </IconButton>
           <Button variant="contained" color="primary" onClick={handleLogout} style={{ marginLeft: '10px' }}>Logout</Button>
@@ -278,25 +295,20 @@ function GuessTheNumber() {
           </Button>
         </Grid>
       </Grid>
-
-      <Typography variant="h4" style={{ margin: '40px 0 20px' }}>Last 10 Rounds</Typography>
-      <List>
-        {rounds.slice(0, 10).map(round => (
-          <Card key={round.id} style={{ marginBottom: '10px' }}>
-            <CardContent>
-              <Typography variant="body2" color="textSecondary">
-                {moment(round.timestamp.toDate()).format('MMMM Do YYYY, h:mm:ss a')}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>{round.displayName}</strong> - Winning Number: {round.generatedNumber} - Payout: <span style={{ color: round.payout >= 0 ? 'green' : 'red' }}>
-                  {round.payout >= 0 ? `+$${round.payout.toFixed(2)}` : `-$${Math.abs(round.payout).toFixed(2)}`}
-                </span>
-              </Typography>
-              <Typography variant="body2">Bet ${round.betAmount.toFixed(2)} on {round.betNumbers}</Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </List>
+      <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbarSeverity} 
+          sx={{ width: '100%', backgroundColor: snackbarSeverity === 'success' ? '#4caf50' : '#f44336', color: '#fff' }}
+          action={
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleCloseSnackbar}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
