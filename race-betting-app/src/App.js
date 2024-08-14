@@ -13,8 +13,6 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'; // Darkmode
 import { CssBaseline, Container, Switch, FormControlLabel } from '@mui/material'; // Darkmode
 import './App.css';
 
-// import Leaderboard from './components/Leaderboard'; // Importeer de Leaderboard component
-
 function App() {
   const [darkMode, setDarkMode] = useState(false);
 
@@ -33,10 +31,6 @@ function App() {
       <CssBaseline />
       <Router>
         <Container>
-          <FormControlLabel
-            control={<Switch checked={darkMode} onChange={handleThemeChange} />}
-            label="Dark Mode"
-          />
           <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />

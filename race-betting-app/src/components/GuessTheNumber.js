@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
 import { getDoc, doc, updateDoc, collection, addDoc, query, onSnapshot, orderBy, setDoc } from 'firebase/firestore';
-import { Container, Typography, Button, Grid, List, Card, CardContent } from '@mui/material';
+import { Container, Typography, Button, Grid, List, Card, CardContent, IconButton } from '@mui/material';
 import ChipSelection from './ChipSelection';
 import moment from 'moment';
 import Leaderboard from './Leaderboard'; // Import the new Leaderboard component
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function GuessTheNumber() {
   const [balance, setBalance] = useState(0);
@@ -34,6 +36,15 @@ function GuessTheNumber() {
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out: ', error);
     }
   };
 
@@ -181,9 +192,23 @@ function GuessTheNumber() {
 
   return (
     <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
-      <Leaderboard /> {/* Use the new Leaderboard component */}
-      <Typography variant="h3" gutterBottom>Guess the Number</Typography>
-      <Typography variant="h1" gutterBottom style={{ margin: '20px 0' }}>
+      <Leaderboard />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/games')}>
+          Back
+        </Button>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton onClick={() => navigate('/profile')}>
+            <AccountCircleIcon />
+          </IconButton>
+          <Button variant="contained" color="primary" onClick={handleLogout} style={{ marginLeft: '10px' }}>Logout</Button>
+        </div>
+      </div>
+      <Typography variant="h3" gutterBottom style={{ marginTop: '20px' }}>
+        Guess the Number
+      </Typography>
+      <div style={{ borderBottom: '2px solid #ccc', marginBottom: '20px' }}></div>
+      <Typography variant="h1" gutterBottom style={{ margin: '40px 0' }}>
         {randomNumber}
       </Typography>
       <Typography variant="h5" gutterBottom style={{ marginBottom: '30px' }}>Balance: ${balance}</Typography>

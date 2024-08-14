@@ -2,17 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
-import {
-  Button,
-  Container,
-  Typography,
-  Box,
-  IconButton,
-  Grid,
-  Divider,
-} from '@mui/material';
+import { Button, Container, Typography, Box, IconButton, Grid, Divider } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import Leaderboard from './Leaderboard'; // importeer het leaderboard component
 
 function GameSelection() {
