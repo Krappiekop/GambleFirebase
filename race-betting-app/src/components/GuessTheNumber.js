@@ -1,8 +1,7 @@
-// src/components/GuessTheNumber.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
-import { getDoc, doc, updateDoc, collection, addDoc, query, onSnapshot, orderBy } from 'firebase/firestore';
+import { getDoc, doc, updateDoc, collection, addDoc, query, onSnapshot, orderBy, setDoc } from 'firebase/firestore';
 import { Container, Typography, Button, Grid, List, Card, CardContent } from '@mui/material';
 import ChipSelection from './ChipSelection';
 import moment from 'moment';
@@ -14,6 +13,7 @@ function GuessTheNumber() {
   const [lastBet, setLastBet] = useState({});
   const [rounds, setRounds] = useState([]);
   const [randomNumber, setRandomNumber] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,8 +89,23 @@ function GuessTheNumber() {
   };
 
   const handleStartRound = async () => {
+    setIsAnimating(true);
+    let animationCount = 0;
+    const animationInterval = setInterval(() => {
+      setRandomNumber(Math.floor(Math.random() * 10) + 1);
+      animationCount++;
+      if (animationCount > 20) {
+        clearInterval(animationInterval);
+        revealWinningNumber();
+      }
+    }, 100);
+  };
+
+  const revealWinningNumber = async () => {
     const generatedNumber = Math.floor(Math.random() * 10) + 1;
     setRandomNumber(generatedNumber);
+    setIsAnimating(false);
+
     let totalPayout = 0;
     let totalBet = 0;
     let betNumbers = [];
@@ -99,7 +114,7 @@ function GuessTheNumber() {
       const betAmount = selectedNumbers[number] || 0;
       totalBet += betAmount;
       if (betAmount > 0) {
-        betNumbers.push(number);  // Voeg het nummer toe aan de betNumbers array
+        betNumbers.push(number);
         if (parseInt(number) === generatedNumber) {
           totalPayout += betAmount * 10;
         } else if (
@@ -108,35 +123,56 @@ function GuessTheNumber() {
           (number === '10' && generatedNumber === 1)
         ) {
           totalPayout += betAmount * 3;
-        } else {
-          totalPayout -= betAmount;
         }
       }
     });
 
+    const netPayout = totalPayout; // Net payout is just the payout without subtracting the total bet again
+
     try {
       const user = auth.currentUser;
-      const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
       let displayName = user.displayName;
       if (userDoc.exists()) {
         displayName = userDoc.data().displayName || displayName;
+
+        const statsRef = doc(firestore, 'users', user.uid, 'stats', 'guessTheNumber');
+        const statsDoc = await getDoc(statsRef);
+        if (statsDoc.exists()) {
+          const statsData = statsDoc.data();
+          await updateDoc(statsRef, {
+            gamesPlayed: statsData.gamesPlayed + 1,
+            totalBet: statsData.totalBet + totalBet,
+            totalWins: statsData.totalWins + (netPayout > totalBet ? 1 : 0),
+            totalLosses: statsData.totalLosses + (netPayout <= totalBet ? 1 : 0),
+          });
+        } else {
+          await setDoc(statsRef, {
+            gamesPlayed: 1,
+            totalBet: totalBet,
+            totalWins: netPayout > totalBet ? 1 : 0,
+            totalLosses: netPayout <= totalBet ? 1 : 0,
+          });
+        }
       }
 
       await addDoc(collection(firestore, 'guessTheNumberRounds'), {
         generatedNumber,
         displayName: displayName,
         betAmount: totalBet,
-        payout: totalPayout,
-        betNumbers: betNumbers.join(', '),  // Sla de nummers op als een string
+        payout: netPayout - totalBet, // Adjusted to reflect net gain/loss
+        betNumbers: betNumbers.join(', '),
         timestamp: new Date()
       });
 
-      await updateDoc(doc(firestore, 'users', auth.currentUser.uid), {
-        balance: balance + totalPayout
+      // Update the user's balance only with the net payout (which already accounts for the initial bet)
+      await updateDoc(userDocRef, {
+        balance: balance + netPayout
       });
 
-      setBalance(balance + totalPayout);
-      setLastBet(selectedNumbers);  // Sla de huidige inzet op als "last bet"
+      setBalance(balance + netPayout);
+      setLastBet(selectedNumbers);
       setSelectedNumbers({});
     } catch (error) {
       console.error('Error starting round: ', error);
@@ -161,6 +197,7 @@ function GuessTheNumber() {
               color="primary"
               onClick={() => handleNumberSelect(number)}
               fullWidth
+              disabled={isAnimating}
             >
               {number}
               {selectedNumbers[number] && <Typography variant="body2">(${selectedNumbers[number]})</Typography>}
@@ -169,10 +206,11 @@ function GuessTheNumber() {
         ))}
         <Grid item xs={12}>
           <Button
-            variant={selectedNumbers[10] ? 'contained' : 'outlined'} // Kleur wijzigen afhankelijk van selectie
+            variant={selectedNumbers[10] ? 'contained' : 'outlined'}
             color="primary"
             onClick={() => handleNumberSelect(10)}
             fullWidth
+            disabled={isAnimating}
           >
             10
             {selectedNumbers[10] && <Typography variant="body2">(${selectedNumbers[10]})</Typography>}
@@ -186,6 +224,7 @@ function GuessTheNumber() {
             color="primary"
             onClick={handleStartRound}
             fullWidth
+            disabled={isAnimating || Object.keys(selectedNumbers).length === 0} // Disable Play button if no bets are placed
           >
             Play
           </Button>
@@ -196,6 +235,7 @@ function GuessTheNumber() {
             color="secondary"
             onClick={handleLastBet}
             fullWidth
+            disabled={isAnimating}
           >
             Last Bet
           </Button>
@@ -206,41 +246,35 @@ function GuessTheNumber() {
             color="error"
             onClick={handleClearBets}
             fullWidth
+            disabled={isAnimating}
           >
             Clear Bets
           </Button>
         </Grid>
       </Grid>
-      <Typography variant="h4" gutterBottom style={{ marginTop: '40px' }}>
-        Last 10 Rounds
-      </Typography>
-      <List>
-        {rounds.slice(0, 10).map(round => {
-          const isPayoutPositive = round.payout >= 0;
-          const payoutAmount = Math.abs(round.payout).toFixed(2);
-          const payoutColor = isPayoutPositive ? 'green' : 'red';
 
+      <Typography variant="h4" style={{ margin: '40px 0 20px' }}>Last 10 Rounds</Typography>
+      <List>
+        {rounds.map(round => {
+          const isPayoutPositive = round.payout >= 0;
+          const payoutAmount = Math.abs(round.payout).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
           return (
-            <Card key={round.id} variant="outlined" style={{ marginBottom: '10px' }}>
+            <Card key={round.id} style={{ marginBottom: '10px' }}>
               <CardContent>
                 <Typography variant="subtitle1" color="textSecondary">
                   {moment(round.timestamp.toDate()).format('MMMM Do YYYY, h:mm:ss a')}
                 </Typography>
-                <Typography variant="h6" component="div">
-                  {round.displayName} - Winning Number: {round.generatedNumber} - Payout: 
-                  <span style={{ color: payoutColor }}>
-                   {' '} ${payoutAmount}
-                  </span>
+                <Typography variant="body1">
+                  <strong>{round.displayName}</strong> - Winning Number: <strong>{round.generatedNumber}</strong> - Payout: <strong style={{ color: isPayoutPositive ? 'green' : 'red' }}>{isPayoutPositive ? '+' : '-'}{payoutAmount}</strong>
                 </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  Bet ${round.betAmount} on {round.betNumbers}
+                <Typography variant="body2">
+                  Bet {round.betAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} on {round.betNumbers}
                 </Typography>
               </CardContent>
             </Card>
           );
         })}
       </List>
-
     </Container>
   );
 }

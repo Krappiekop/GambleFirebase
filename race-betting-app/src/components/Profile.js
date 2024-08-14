@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { Button, Container, TextField, Typography, Switch, FormControlLabel } from '@mui/material';
+import { Button, Container, TextField, Typography, Box, Card, CardContent, Grid } from '@mui/material';
 
 function Profile() {
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+  const [stats, setStats] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,12 @@ function Profile() {
       const userData = userDoc.data();
       setEmail(userData.email);
       setDisplayName(userData.displayName);
+    }
+
+    // Fetch statistics for GuessTheNumber
+    const statsDoc = await getDoc(doc(firestore, 'users', user.uid, 'stats', 'guessTheNumber'));
+    if (statsDoc.exists()) {
+      setStats(statsDoc.data());
     }
   };
 
@@ -69,6 +76,46 @@ function Profile() {
       >
         Update Profile
       </Button>
+
+      {stats && (
+        <Box mt={5}>
+          <Typography variant="h5" gutterBottom>Guess The Number Stats</Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography variant="h6" color="textSecondary" gutterBottom>Total Games Played</Typography>
+                  <Typography variant="h4">{stats.gamesPlayed}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography variant="h6" color="textSecondary" gutterBottom>Total Bet Amount</Typography>
+                  <Typography variant="h4">${stats.totalBet}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography variant="h6" color="textSecondary" gutterBottom>Total Wins</Typography>
+                  <Typography variant="h4">{stats.totalWins}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography variant="h6" color="textSecondary" gutterBottom>Total Losses</Typography>
+                  <Typography variant="h4">{stats.totalLosses}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
     </Container>
   );
 }

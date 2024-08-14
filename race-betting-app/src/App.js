@@ -12,6 +12,7 @@ import GuessTheNumber from './components/GuessTheNumber'; // Importeer de GuessT
 import { ThemeProvider, createTheme } from '@mui/material/styles'; // Darkmode
 import { CssBaseline, Container, Switch, FormControlLabel } from '@mui/material'; // Darkmode
 import './App.css';
+
 // import Leaderboard from './components/Leaderboard'; // Importeer de Leaderboard component
 
 function App() {

@@ -2,7 +2,8 @@
   "name": "race-betting-app",
   "version": "0.1.0",
   "private": true,
-    "dependencies": {
+  "homepage": "https://krappiekop.github.io/GambleFirebase",
+  "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
@@ -23,7 +24,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
