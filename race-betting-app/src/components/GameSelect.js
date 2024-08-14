@@ -4,7 +4,10 @@ import { auth, firestore } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
 import { Button, Container, Typography, Box, IconButton, Grid, Divider } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Leaderboard from './Leaderboard';
+import Leaderboard from './Leaderboard'; // importeer het leaderboard component
+import chestImage from './assets/chest_closed_NoBG.png'; // Import the chest image
+import wheelfortune from './assets/Wheel_of_Fortune.png'; // Import the wheelfortune image
+import guessthenumber from './assets/GuessTheNumber.png'; // Import the guessthenumber image
 
 function GameSelection() {
   const [balance, setBalance] = useState(0);
@@ -75,37 +78,46 @@ function GameSelection() {
               height: '150px',
               fontSize: '18px',
               display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
+              justifyContent: 'center',
+              alignItems: 'center',
               padding: '10px',
-              backgroundImage: `url(${process.env.PUBLIC_URL}/assets/chest_closed_NoBG.png)`,
-              backgroundSize: 'cover',
+              position: 'relative',
+              backgroundColor: '#1E88E5',
+              backgroundImage: `url(${chestImage})`,
+              backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
+              backgroundSize: '50%',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+              color: '#FFFFFF'
             }}
           >
-            DAILY CHEST
+            <span style={{ position: 'absolute', bottom: '10px', right: '10px' }}>DAILY CHEST</span>
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <Button
+        <Button
             variant="contained"
             color="primary"
+            onClick={() => navigate('/free-spin')}
             style={{
               width: '100%',
               height: '150px',
               fontSize: '18px',
               display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
+              justifyContent: 'center',
+              alignItems: 'center',
               padding: '10px',
-              backgroundImage: `url(${process.env.PUBLIC_URL}/assets/Wheel_of_Fortune.png)`,
-              backgroundSize: 'cover',
+              position: 'relative',
+              backgroundColor: '#1E88E5',
+              backgroundImage: `url(${wheelfortune})`,
+              backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
+              backgroundSize: '50%',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+              color: '#FFFFFF'
             }}
           >
-            FREE SPIN
+            <span style={{ position: 'absolute', bottom: '10px', right: '10px' }}>FREE SPIN</span>
           </Button>
         </Grid>
       </Grid>
@@ -115,7 +127,7 @@ function GameSelection() {
       <Divider style={{ marginBottom: '10px' }} />
       <Grid container spacing={3} justifyContent="flex-start">
         <Grid item xs={12} sm={6} md={4}>
-          <Button
+        <Button
             variant="contained"
             color="primary"
             onClick={() => navigate('/guess-the-number')}
@@ -124,12 +136,20 @@ function GameSelection() {
               height: '150px',
               fontSize: '18px',
               display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
-              padding: '10px'
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '10px',
+              position: 'relative',
+              backgroundColor: '#1E88E5',
+              backgroundImage: `url(${guessthenumber})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: '50%',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+              color: '#FFFFFF'
             }}
           >
-            GUESS THE NUMBER
+            <span style={{ position: 'absolute', bottom: '10px', right: '10px' }}>GUESS THE NUMBER</span>
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -180,6 +200,8 @@ function GameSelection() {
             style={{
               width: '100%',
               height: '150px',
+              backgroundImage: 'url(/path_to_marble_race_image.jpg)',
+              backgroundSize: 'cover',
               fontSize: '18px',
               display: 'flex',
               justifyContent: 'flex-end',
@@ -232,7 +254,7 @@ function GameSelection() {
         </Grid>
       </Grid>
 
-      <Leaderboard drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+      <Leaderboard drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} /> {/* Gebruik het Leaderboard component */}
     </Container>
   );
 }

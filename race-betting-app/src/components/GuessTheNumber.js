@@ -5,7 +5,7 @@ import { getDoc, doc, updateDoc, collection, addDoc, query, onSnapshot, orderBy,
 import { Container, Typography, Button, Grid, IconButton, Snackbar, Alert } from '@mui/material';
 import ChipSelection from './ChipSelection';
 import Leaderboard from './Leaderboard'; // Import the new Leaderboard component
-import Log from './Log'; // Import the new Log component
+import Log from './GuessthenumberLog'; // Import the new Log component
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CloseIcon from '@mui/icons-material/Close';

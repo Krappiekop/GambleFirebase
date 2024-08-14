@@ -1,0 +1,22 @@
+.wheel-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wheel {
+  width: 400px; /* Verhoogt de grootte van het wiel */
+  height: 400px; /* Verhoogt de hoogte van het wiel */
+  transition: transform 5s ease-out; /* Vertraagde animatie */
+}
+
+.spinning {
+  animation: spin 5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg); /* Laat het wiel draaien */
+  }
+}
