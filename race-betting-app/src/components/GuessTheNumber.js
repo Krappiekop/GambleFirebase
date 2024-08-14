@@ -5,6 +5,7 @@ import { getDoc, doc, updateDoc, collection, addDoc, query, onSnapshot, orderBy,
 import { Container, Typography, Button, Grid, List, Card, CardContent } from '@mui/material';
 import ChipSelection from './ChipSelection';
 import moment from 'moment';
+import Leaderboard from './Leaderboard'; // Import the new Leaderboard component
 
 function GuessTheNumber() {
   const [balance, setBalance] = useState(0);
@@ -127,7 +128,7 @@ function GuessTheNumber() {
       }
     });
 
-    const netPayout = totalPayout; // Net payout is just the payout without subtracting the total bet again
+    const netPayout = totalPayout;
 
     try {
       const user = auth.currentUser;
@@ -161,12 +162,11 @@ function GuessTheNumber() {
         generatedNumber,
         displayName: displayName,
         betAmount: totalBet,
-        payout: netPayout - totalBet, // Adjusted to reflect net gain/loss
+        payout: netPayout - totalBet,
         betNumbers: betNumbers.join(', '),
         timestamp: new Date()
       });
 
-      // Update the user's balance only with the net payout (which already accounts for the initial bet)
       await updateDoc(userDocRef, {
         balance: balance + netPayout
       });
@@ -180,7 +180,8 @@ function GuessTheNumber() {
   };
 
   return (
-    <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>
+    <Container style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
+      <Leaderboard /> {/* Use the new Leaderboard component */}
       <Typography variant="h3" gutterBottom>Guess the Number</Typography>
       <Typography variant="h1" gutterBottom style={{ margin: '20px 0' }}>
         {randomNumber}
@@ -224,7 +225,7 @@ function GuessTheNumber() {
             color="primary"
             onClick={handleStartRound}
             fullWidth
-            disabled={isAnimating || Object.keys(selectedNumbers).length === 0} // Disable Play button if no bets are placed
+            disabled={isAnimating || Object.keys(selectedNumbers).length === 0}
           >
             Play
           </Button>
@@ -255,25 +256,21 @@ function GuessTheNumber() {
 
       <Typography variant="h4" style={{ margin: '40px 0 20px' }}>Last 10 Rounds</Typography>
       <List>
-        {rounds.map(round => {
-          const isPayoutPositive = round.payout >= 0;
-          const payoutAmount = Math.abs(round.payout).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-          return (
-            <Card key={round.id} style={{ marginBottom: '10px' }}>
-              <CardContent>
-                <Typography variant="subtitle1" color="textSecondary">
-                  {moment(round.timestamp.toDate()).format('MMMM Do YYYY, h:mm:ss a')}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>{round.displayName}</strong> - Winning Number: <strong>{round.generatedNumber}</strong> - Payout: <strong style={{ color: isPayoutPositive ? 'green' : 'red' }}>{isPayoutPositive ? '+' : '-'}{payoutAmount}</strong>
-                </Typography>
-                <Typography variant="body2">
-                  Bet {round.betAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} on {round.betNumbers}
-                </Typography>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {rounds.slice(0, 10).map(round => (
+          <Card key={round.id} style={{ marginBottom: '10px' }}>
+            <CardContent>
+              <Typography variant="body2" color="textSecondary">
+                {moment(round.timestamp.toDate()).format('MMMM Do YYYY, h:mm:ss a')}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>{round.displayName}</strong> - Winning Number: {round.generatedNumber} - Payout: <span style={{ color: round.payout >= 0 ? 'green' : 'red' }}>
+                  {round.payout >= 0 ? `+$${round.payout.toFixed(2)}` : `-$${Math.abs(round.payout).toFixed(2)}`}
+                </span>
+              </Typography>
+              <Typography variant="body2">Bet ${round.betAmount.toFixed(2)} on {round.betNumbers}</Typography>
+            </CardContent>
+          </Card>
+        ))}
       </List>
     </Container>
   );
