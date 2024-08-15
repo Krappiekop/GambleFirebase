@@ -8,6 +8,7 @@ import Leaderboard from './Leaderboard'; // importeer het leaderboard component
 import chestImage from './assets/chest_closed_NoBG.png'; // Import the chest image
 import wheelfortune from './assets/Wheel_of_Fortune.png'; // Import the wheelfortune image
 import guessthenumber from './assets/GuessTheNumber.png'; // Import the guessthenumber image
+import MineGame from './assets/MineGame.png'; // Import the guessthenumber image
 
 function GameSelection() {
   const [balance, setBalance] = useState(0);
@@ -170,23 +171,33 @@ function GameSelection() {
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <Button
+        <Button
             variant="contained"
             color="primary"
+            onClick={() => navigate('/mine')}
             style={{
               width: '100%',
               height: '150px',
               fontSize: '18px',
               display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
-              padding: '10px'
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '10px',
+              position: 'relative',
+              backgroundColor: '#1E88E5',
+              backgroundImage: `url(${MineGame})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              backgroundSize: '50%',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+              color: '#FFFFFF'
             }}
           >
-            HIGHER OR LOWER
+            <span style={{ position: 'absolute', bottom: '10px', right: '10px' }}>MINE GAME</span>
           </Button>
         </Grid>
       </Grid>
+      
 
       {/* Race Category */}
       <Typography variant="h5" gutterBottom mt={4}>Race</Typography>

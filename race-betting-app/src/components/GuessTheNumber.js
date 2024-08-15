@@ -69,6 +69,11 @@ function GuessTheNumber() {
       return;
     }
 
+    if (Object.keys(selectedNumbers).length >= 3) {
+      alert('You can only bet on a maximum of 3 numbers');
+      return;
+    }
+
     if (balance < selectedChip) {
       alert('Not enough balance');
       return;
@@ -139,6 +144,12 @@ function GuessTheNumber() {
           (number === '10' && generatedNumber === 1)
         ) {
           totalPayout += betAmount * 3;
+        } else if (
+          Math.abs(parseInt(number) - generatedNumber) === 2 ||
+          (number === '2' && generatedNumber === 10) ||
+          (number === '10' && generatedNumber === 2)
+        ) {
+          totalPayout += betAmount * 1.5;
         }
       }
     });

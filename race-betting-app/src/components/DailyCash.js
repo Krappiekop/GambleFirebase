@@ -51,8 +51,8 @@ function DailyCash() {
         const currentTime = Date.now();
         const timeElapsed = Math.floor((currentTime - lastOpened) / 1000);
 
-        if (timeElapsed < 600) { 
-          setCooldown(600 - timeElapsed);
+        if (timeElapsed < 43200) { // 12 uur in seconden
+          setCooldown(43200 - timeElapsed);
           setIsOpened(true);
         }
       }
@@ -96,7 +96,7 @@ function DailyCash() {
       const newBalance = balance + reward;
       setBalance(newBalance);
       setIsOpened(true);
-      setCooldown(108000);
+      setCooldown(43200); // 12 uur in seconden
       setRewardAmount(reward);
       setShowCoins(true); 
 
@@ -164,7 +164,7 @@ function DailyCash() {
       </Typography>
       <div style={{ borderBottom: '2px solid #ccc', marginBottom: '20px' }}></div>
       <div className="coin-container">
-        <img src={isOpened ? chestOpen : chestClosed} alt="Chest" style={{ width: '200px', marginBottom: '20px' }} />
+       <img src={isOpened ? chestOpen : chestClosed} alt="Chest" style={{ width: '300px', marginBottom: '20px' }} />
         {showCoins && (
           <>
             <div className="coin" style={{ left: '30%' }}></div>
@@ -181,8 +181,9 @@ function DailyCash() {
         color="primary"
         onClick={handleOpenChest}
         disabled={isOpened}
+        style={{ fontSize: '1.2rem', padding: '10px 20px' }}
       >
-        {cooldown > 0 ? `Wait ${cooldown}s` : 'Open Daily Chest'}
+        {cooldown > 0 ? `Wait ${Math.floor(cooldown / 3600)}h ${Math.floor((cooldown % 3600) / 60)}m` : 'Open Daily Chest'}
       </Button>
       <Snackbar
         open={showSnackbar}

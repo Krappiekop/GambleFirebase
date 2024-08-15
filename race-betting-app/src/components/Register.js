@@ -21,9 +21,9 @@ function Register() {
       // Maak een Firestore document voor de gebruiker
       await setDoc(doc(firestore, 'users', user.uid), {
         email: user.email,
-        balance: 100 // of een andere startwaarde
+        balance: 50 // of een andere startwaarde
       });
-      navigate('/dashboard');
+      navigate('/games');
     } catch (error) {
       setSnackbar({ open: true, message: error.message, severity: 'error' });
     }

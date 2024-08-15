@@ -11,6 +11,7 @@ import GameSelect from './components/GameSelect'; // Importeer de GameSelection 
 import GuessTheNumber from './components/GuessTheNumber'; // Importeer de GuessTheNumber component
 import DailyCash from './components/DailyCash'; // Importeer de GuessTheNumber component
 import FreeSpin from './components/FreeSpin'; // Importeer de GuessTheNumber component
+import Mine from './components/Mines';
 import { ThemeProvider, createTheme } from '@mui/material/styles'; // Darkmode
 import { CssBaseline, Container, Switch, FormControlLabel } from '@mui/material'; // Darkmode
 import './App.css';
@@ -44,6 +45,7 @@ function App() {
           <Route path="/guess-the-number" element={<GuessTheNumber />} /> {/* Voeg de GuessTheNumber route toe */}
           <Route path="/daily-cash" element={<DailyCash />} />
           <Route path="/free-spin" element={<FreeSpin />} />
+          <Route path="/mine" element={<Mine />} />
           </Routes>
         </Container>
       </Router>

@@ -18,6 +18,7 @@ function FreeSpin() {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [rounds, setRounds] = useState([]);
+  const [remainingTime, setRemainingTime] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,7 @@ function FreeSpin() {
     } else {
       loadUserData();
       fetchRounds();
+      checkCooldown();
     }
   }, [navigate]);
 
@@ -37,6 +39,15 @@ function FreeSpin() {
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out: ', error);
     }
   };
 
@@ -56,17 +67,34 @@ function FreeSpin() {
     });
   };
 
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigate('/login');
-    } catch (error) {
-      console.error('Error logging out: ', error);
+  const checkCooldown = async () => {
+    const userDoc = await getDoc(doc(firestore, 'users', auth.currentUser.uid));
+    if (userDoc.exists()) {
+      const lastSpinTime = userDoc.data().lastSpinTime?.toDate();
+      if (lastSpinTime) {
+        const now = new Date();
+        const cooldownPeriod = 12 * 60 * 60 * 1000; // 12 uur in milliseconden
+        const timePassed = now - lastSpinTime;
+        const timeLeft = cooldownPeriod - timePassed;
+
+        if (timeLeft > 0) {
+          setRemainingTime(timeLeft);
+          const interval = setInterval(() => {
+            const newTimeLeft = timeLeft - (Date.now() - now);
+            if (newTimeLeft <= 0) {
+              clearInterval(interval);
+              setRemainingTime(null);
+            } else {
+              setRemainingTime(newTimeLeft);
+            }
+          }, 1000);
+        }
+      }
     }
   };
 
-  const handleSpin = () => {
-    if (isSpinning) return;
+  const handleSpin = async () => {
+    if (isSpinning || remainingTime) return;
     setIsSpinning(true);
 
     const prizes = [
@@ -87,7 +115,7 @@ function FreeSpin() {
     setTimeout(async () => {
       setIsSpinning(false);
       const prizeAmount = parseInt(prize.name.replace('$', ''));
-    
+
       try {
         const user = auth.currentUser;
         const userDocRef = doc(firestore, 'users', user.uid);
@@ -99,18 +127,21 @@ function FreeSpin() {
         }
 
         await updateDoc(userDocRef, {
-          balance: balance + prizeAmount
+          balance: balance + prizeAmount,
+          lastSpinTime: new Date()
         });
         setBalance(balance + prizeAmount);
-    
+
         setSnackbarMessage(`${prize.name} added to your balance!`);
         setShowSnackbar(true);
-    
+
         await addDoc(collection(firestore, 'freeSpinRounds'), {
           prize: prize.name,
           displayName: displayName || 'Anonymous',
           timestamp: new Date()
         });
+
+        checkCooldown(); // Start de countdown na het draaien
       } catch (error) {
         console.error('Error updating balance or logging spin:', error);
       }
@@ -132,6 +163,15 @@ function FreeSpin() {
 
   const handleCloseSnackbar = () => {
     setShowSnackbar(false);
+  };
+
+  const formatTime = (milliseconds) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${hours}h ${minutes}m ${seconds}s`;
   };
 
   return (
@@ -165,9 +205,9 @@ function FreeSpin() {
         color="primary"
         onClick={handleSpin}
         fullWidth
-        disabled={isSpinning}
+        disabled={isSpinning || remainingTime}
       >
-        Use Free Spin
+        {remainingTime ? `Available in ${formatTime(remainingTime)}` : 'Use Free Spin'}
       </Button>
       <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <Alert 
