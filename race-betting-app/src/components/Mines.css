@@ -7,6 +7,19 @@
     padding: 20px;
   }
   
+.mine {
+  background-color: #ff4d4d;
+}
+
+  .mine-tile {
+    width: 80px;
+    height: 80px;
+    font-size: 24px;
+    background-color: #2c2f36;
+    color: #fff;
+    border: 1px solid #4a4d54;
+}
+
   .mine-cell {
     width: 60px;
     height: 60px;
@@ -16,11 +29,18 @@
     background-color: #1c1c1c; /* Donkere kleur voor vakjes */
     border-radius: 5px;
   }
-  
+
   .mine-cell img {
     width: 40px;
     height: 40px;
   }
+
+  .mines-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
   
   .diamond {
     background-color: #28a745; /* Groene diamanten */
@@ -29,3 +49,73 @@
     height: 30px;
   }
   
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.bet-controls {
+    margin-bottom: 15px;
+}
+
+.gem {
+    background-color: #66ff66;
+}
+
+.payout-button {
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* General container for the game */
+.game-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2C3E50; /* Color for the large rectangle */
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 80%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Container for the menu */
+.menu-container {
+  flex: 1;
+  max-width: 200px;
+  margin-right: 20px;
+}
+
+/* Container for the grid */
+.grid-container {
+  flex: 2;
+  background-color: #34495E; /* Color for the smaller rectangle */
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* Styling for the grid items (tiles) */
+.grid-container .MuiGrid-item .MuiButton-root {
+  background-color: #1ABC9C; /* Color for the individual tiles */
+  color: #FFFFFF;
+  border-radius: 5px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+
+/* Styling for when the game is over */
+.grid-container .MuiGrid-item .MuiButton-root:disabled {
+  background-color: #E74C3C;
+  color: #FFFFFF;
+}
