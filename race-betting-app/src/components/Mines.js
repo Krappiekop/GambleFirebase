@@ -14,13 +14,15 @@ function Mines() {
     const [minesField, setMinesField] = useState([]);
     const [selectedTiles, setSelectedTiles] = useState([]);
     const [isGameOver, setIsGameOver] = useState(false);
-    const [gameStarted, setGameStarted] = useState(false);
+    const [gameStarted, setGameStarted] = useState(true); // Tiles are always active
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
     const [minesCount, setMinesCount] = useState(3);
     const [betAmount, setBetAmount] = useState(1);
     const [currentMultiplier, setCurrentMultiplier] = useState(1.0); // multiplier for winnings
+    const [diamondsCount, setDiamondsCount] = useState(22); // Number of diamonds
+    const [totalProfit, setTotalProfit] = useState(0);
     const navigate = useNavigate();
 
     const payoutMatrix = [
@@ -35,15 +37,15 @@ function Mines() {
         [1.65, 2.47, 4.07, 6.14, 9.17, 14.17, 21.89, 35.03, 58.38, 102.17, 189.75, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0],
         [1.74, 2.83, 4.95, 7.69, 12.04, 21.89, 35.03, 58.38, 102.17, 189.75, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
         [1.84, 3.26, 6.16, 9.87, 17.32, 26.77, 40.87, 66.41, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [1.99, 3.87, 7.73, 12.94, 21.89, 40.87, 66.41, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [2.16, 4.5, 9.99, 17.51, 26.77, 55.82, 88.52, 148.3, 272.95, 417.45, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [2.47, 5.26, 12.51, 24.01, 40.87, 66.41, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [3.09, 6.16, 15.6, 34.09, 66.41, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [3.54, 7.73, 18.79, 55.82, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [4.12, 9.17, 21.89, 66.41, 148.3, 272.95, 565.74, 1131.48, 2822.96, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [4.95, 10.64, 28.23, 88.52, 208.72, 417.45, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [6.19, 13.85, 38.04, 113.85, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
-        [8.25, 18.79, 52.89, 148.3, 417.45, 939.26, 2504.0, 8768.0, 52598.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [1.99, 3.87, 7.73, 12.94, 21.89, 40.87, 66.41, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [2.16, 4.5, 9.99, 17.51, 26.77, 55.82, 88.52, 148.3, 272.95, 417.45, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [2.47, 5.26, 12.51, 24.01, 40.87, 66.41, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [3.09, 6.16, 15.6, 34.09, 66.41, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [3.54, 7.73, 18.79, 55.82, 113.85, 208.72, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [4.12, 9.17, 21.89, 66.41, 148.3, 272.95, 565.74, 1131.48, 2822.96, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [4.95, 10.64, 28.23, 88.52, 208.72, 417.45, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [6.19, 13.85, 38.04, 113.85, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
+        [8.25, 18.79, 52.89, 148.3, 417.45, 939.26, 2504.0, 8768.0, 52598.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
         [12.37, 27.71, 80.29, 208.72, 565.74, 1131.48, 2822.96, 1131.48, 2822.96, 4418260.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0],
         [24.75, 49.5, 151.59, 357.81, 834.9, 23794.0, 6498.0, 23794.0, 118973.0, 441826.0, 2022545.0, 3236072.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0, 4418260.0]
     ];
@@ -87,10 +89,11 @@ function Mines() {
     const resetGame = () => {
         setIsGameOver(false);
         setSelectedTiles([]);
-        setGameStarted(false);
+        setGameStarted(true);
         const newMinesField = generateMinesField();
         setMinesField(newMinesField);
         setCurrentMultiplier(1.0); // Reset multiplier
+        setTotalProfit(0); // Reset profit
     };
 
     const generateMinesField = () => {
@@ -102,11 +105,12 @@ function Mines() {
             } while (newField[randomIndex] === 'mine');
             newField[randomIndex] = 'mine';
         }
+        setDiamondsCount(25 - minesCount); // Update diamond count based on mines
         return newField;
     };
 
     const handleTileClick = (index) => {
-        if (isGameOver || selectedTiles.includes(index) || !gameStarted) return;
+        if (isGameOver || selectedTiles.includes(index)) return;
 
         const newSelectedTiles = [...selectedTiles, index];
         setSelectedTiles(newSelectedTiles);
@@ -124,6 +128,7 @@ function Mines() {
             setSnackbarSeverity('success');
             setSnackbarMessage(`Safe! Multiplier: x${multiplier.toFixed(2)}`);
             setShowSnackbar(true);
+            setTotalProfit(betAmount * multiplier); // Update total profit
         }
     };
 
@@ -136,16 +141,25 @@ function Mines() {
         setShowSnackbar(false);
     };
 
-    const startGame = () => {
-        setGameStarted(true);
-    };
-
-    const handleBetChange = (amount) => {
-        setBetAmount(amount);
+    const handleBetChange = (e) => {
+        setBetAmount(parseFloat(e.target.value));
     };
 
     const handleMinesChange = (e) => {
-        setMinesCount(parseInt(e.target.value));
+        const mines = parseInt(e.target.value);
+        setMinesCount(mines);
+        setDiamondsCount(25 - mines); // Ensure diamonds count is updated
+    };
+
+    const handlePickRandomTile = () => {
+        const unselectedTiles = minesField
+            .map((tile, index) => (selectedTiles.includes(index) ? null : index))
+            .filter((index) => index !== null);
+
+        if (unselectedTiles.length > 0) {
+            const randomIndex = unselectedTiles[Math.floor(Math.random() * unselectedTiles.length)];
+            handleTileClick(randomIndex);
+        }
     };
 
     return (
@@ -169,28 +183,57 @@ function Mines() {
             <div className="game-container">
                 <div className="menu-container">
                     <TextField
-                        select
-                        label="Mines"
-                        value={minesCount}
-                        onChange={handleMinesChange}
+                        label="Bet Amount"
+                        value={betAmount}
+                        onChange={handleBetChange}
                         fullWidth
                         margin="normal"
-                    >
-                        {[...Array(24).keys()].map((count) => (
-                            <MenuItem key={count + 1} value={count + 1}>
-                                {count + 1}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                        type="number"
+                        inputProps={{ min: "1", step: "0.01" }}
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                        <TextField
+                            label="Mines"
+                            value={minesCount}
+                            onChange={handleMinesChange}
+                            fullWidth
+                            margin="normal"
+                            type="number"
+                            inputProps={{ min: "1", max: "24" }}
+                            style={{ marginRight: '10px' }}
+                        />
+                        <TextField
+                            label="Gems"
+                            value={diamondsCount}
+                            fullWidth
+                            margin="normal"
+                            InputProps={{ readOnly: true }}
+                        />
+                    </div>
+                    <TextField
+                        label="Total Profit"
+                        value={totalProfit.toFixed(2)}
+                        fullWidth
+                        margin="normal"
+                        InputProps={{ readOnly: true }}
+                    />
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={startGame}
+                        onClick={handlePickRandomTile}
                         fullWidth
-                        disabled={gameStarted}
                         style={{ marginTop: '20px' }}
                     >
-                        Play
+                        Pick random tile
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => {}} // Cashout logic goes here
+                        fullWidth
+                        style={{ marginTop: '10px', backgroundColor: '#4caf50' }}
+                    >
+                        Cashout
                     </Button>
                 </div>
 
@@ -204,7 +247,7 @@ function Mines() {
                                     onClick={() => handleTileClick(index)}
                                     fullWidth
                                     style={{ height: '100px', fontSize: '24px' }}
-                                    disabled={isGameOver || !gameStarted}
+                                    disabled={isGameOver}
                                 >
                                     {selectedTiles.includes(index) ? (tile === 'mine' ? '💣' : '💎') : ''}
                                 </Button>
@@ -213,20 +256,6 @@ function Mines() {
                     </Grid>
                 </div>
             </div>
-
-            <Grid container spacing={2} justifyContent="center" style={{ marginTop: '20px' }}>
-                <Grid item xs={6}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={resetGame}
-                        fullWidth
-                        disabled={!isGameOver}
-                    >
-                        {isGameOver ? 'Play Again' : 'Reset Game'}
-                    </Button>
-                </Grid>
-            </Grid>
 
             <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert 
