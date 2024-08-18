@@ -1,168 +1,91 @@
-.mines-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  justify-content: center;
-  background-color: #2b2b2b; /* Donkere achtergrondkleur */
-  padding: 20px;
-}
-
-.mine {
-  background-color: #ff4d4d;
-}
-
-.mine-tile {
-  width: 80px;
-  height: 80px;
-  font-size: 24px;
-  background-color: #2c2f36;
-  color: #fff;
-  border: 1px solid #4a4d54;
-}
-
-.mine-cell {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #1c1c1c; /* Donkere kleur voor vakjes */
-  border-radius: 5px;
-}
-
-.mine-cell img {
-  width: 40px;
-  height: 40px;
-}
-
-.mines-container {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
-}
-
-.diamond {
-  background-color: #28a745; /* Groene diamanten */
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-}
-
-.back-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-}
-
-.controls {
-  margin-bottom: 20px;
-}
-
-.bet-controls {
-  margin-bottom: 15px;
-}
-
-.gem {
-  background-color: #66ff66;
-}
-
-.payout-button {
-  margin-top: 20px;
-  background-color: #4CAF50;
-  color: white;
-}
-
-/* Algemene container voor het spel */
+/* General container for the game */
 .game-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #213744; /* Kleur voor de grote rechthoek */
-  border-radius: 10px;
+  background-color: #2C3E50; /* Grote rechthoek: achtergrondkleur */
+  border-radius: 10px; /* Afronding van hoeken voor de container */
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 80%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Schaduw voor diepte-effect */
+  max-width: 80%; /* Maximale breedte van de container */
   margin: 0 auto;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Zorgt ervoor dat padding wordt opgenomen in de totale breedte */
 }
 
 /* Container voor het menu */
 .menu-container {
-  flex: 1;
-  max-width: 200px;
-  margin-right: 20px;
+  flex: 1; /* Zorgt ervoor dat de menu-container één deel van de beschikbare ruimte inneemt */
+  max-width: 200px; /* Maximale breedte voor het menu */
+  margin-right: 20px; /* Afstand tussen menu en grid */
 }
 
-/* Container voor de grid */
+/* Container voor het grid */
 .grid-container {
-  flex: 2;
-  background-color: #0F212D; /* Kleur voor de kleinere rechthoek */
-  padding: 10px;
-  border-radius: 10px;
+  flex: 2; /* Zorgt ervoor dat de grid-container twee delen van de beschikbare ruimte inneemt */
+  background-color: #34495E; /* Kleinere rechthoek: achtergrondkleur */
+  padding: 10px; /* Ruimte tussen de rand van de container en de tiles */
+  border-radius: 10px; /* Afronding van hoeken voor de grid-container */
 }
 
-/* Stijl voor de grid items (tegels) */
+/* Styling voor de grid-items (tiles) */
 .grid-container .MuiGrid-item .MuiButton-root {
-  background-color: #1ABC9C; /* Kleur voor de individuele tegels */
-  color: #FFFFFF;
-  border-radius: 5px;
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
+  background-color: #2F4554; /* Kleur voor de individuele tiles */
+  color: #FFFFFF; /* Kleur van de tekst op de tiles */
+  border-radius: 5px; /* Afronding van de hoeken van de tiles */
+  height: 80px; /* Hoogte van de tiles */
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  font-size: 24px; /* Grootte van de tekst op de tiles */
 }
 
-/* Stijl voor wanneer het spel voorbij is */
+/* Nieuwe tile kleur na klikken */
+.grid-container .MuiGrid-item .MuiButton-root.clicked {
+  background-color: #2F4554; /* Kleur van de tile na klikken */
+  color: #FFFFFF; /* Kleur van de tekst na klikken */
+}
+
+/* Styling voor wanneer het spel is afgelopen (disabled state) */
 .grid-container .MuiGrid-item .MuiButton-root:disabled {
-  background-color: #E74C3C;
-  color: #FFFFFF;
+  background-color: #2F4554; /* Kleur van de tiles wanneer ze disabled zijn */
+  color: #FFFFFF; /* Kleur van de tekst op disabled tiles */
 }
 
-/* Toegevoegde stijlen voor het Bet Amount veld */
-.bet-amount-container {
-  margin-bottom: 15px;
-}
-
-.bet-amount-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.bet-amount-input {
-  width: 100%;
-  padding: 8px;
+/* Specifieke styling voor de Play en Cashout knoppen */
+.menu-container .play-button, 
+.menu-container .cashout-button {
+  background-color: #3498DB; /* Blauwe kleur voor de knoppen */
+  color: #FFFFFF; /* Witte tekstkleur op de knoppen */
+  padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  font-size: 18px;
+  text-transform: uppercase; /* Zorgt ervoor dat de tekst in hoofdletters staat */
+  width: 100%; /* Zorgt ervoor dat de knoppen de volledige breedte van de container innemen */
+  margin-bottom: 10px; /* Afstand tussen de knoppen en andere elementen */
+}
+
+/* Styling voor de bet amount, mines, en andere inputvelden */
+.menu-container input, 
+.menu-container select {
+  width: 100%; /* Zorgt ervoor dat de inputvelden de volledige breedte van de container innemen */
+  padding: 10px;
+  margin-bottom: 10px; /* Afstand tussen de inputvelden en andere elementen */
+  border-radius: 5px;
+  border: none; /* Verwijdert de witte randen rond de inputvelden */
   font-size: 16px;
+  background-color: #2C3E50; /* Maakt de achtergrondkleur van de inputvelden consistent met het menu */
+  color: #FFFFFF; /* Zorgt ervoor dat de tekst in de inputvelden wit is */
 }
 
-/* Stijlen voor de knop 'Pick random tile' */
-.random-tile-button {
-  margin-top: 15px;
-  background-color: #3498DB;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
+/* Verwijdert de witte lijnen van de tekstvakken */
+.menu-container .MuiInputBase-root, 
+.menu-container .MuiOutlinedInput-root {
+  border: none; /* Verwijdert de standaard border van Material-UI */
+  box-shadow: none; /* Verwijdert eventuele schaduw */
 }
 
-/* Inactieve Cashout knop */
-.cashout-button-disabled {
-  background-color: #7f8c8d;
-  color: #bdc3c7;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: not-allowed;
+/* Verwijdert de witte lijnen bij de tekstvakken als het spel gestart is */
+.menu-container .MuiInputBase-root.Mui-disabled, 
+.menu-container .MuiOutlinedInput-root.Mui-disabled {
+  background-color: #2C3E50; /* Zorgt ervoor dat de achtergrondkleur hetzelfde blijft bij disabled input */
 }
-
-/* Actieve Cashout knop */
-.cashout-button-active {
-  background-color: #2ecc71;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-

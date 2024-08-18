@@ -1,84 +1,84 @@
 .mines-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    justify-content: center;
-    background-color: #2b2b2b; /* Donkere achtergrondkleur */
-    padding: 20px;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  justify-content: center;
+  background-color: #2b2b2b; /* Donkere achtergrondkleur */
+  padding: 20px;
+}
+
 .mine {
   background-color: #ff4d4d;
 }
 
-  .mine-tile {
-    width: 80px;
-    height: 80px;
-    font-size: 24px;
-    background-color: #2c2f36;
-    color: #fff;
-    border: 1px solid #4a4d54;
+.mine-tile {
+  width: 80px;
+  height: 80px;
+  font-size: 24px;
+  background-color: #2c2f36;
+  color: #fff;
+  border: 1px solid #4a4d54;
 }
 
-  .mine-cell {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #1c1c1c; /* Donkere kleur voor vakjes */
-    border-radius: 5px;
-  }
-
-  .mine-cell img {
-    width: 40px;
-    height: 40px;
-  }
-
-  .mines-container {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
+.mine-cell {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1c1c1c; /* Donkere kleur voor vakjes */
+  border-radius: 5px;
 }
-  
-  .diamond {
-    background-color: #28a745; /* Groene diamanten */
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-  }
-  
+
+.mine-cell img {
+  width: 40px;
+  height: 40px;
+}
+
+.mines-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.diamond {
+  background-color: #28a745; /* Groene diamanten */
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
 .back-button {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 
 .controls {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .bet-controls {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .gem {
-    background-color: #66ff66;
+  background-color: #66ff66;
 }
 
 .payout-button {
-    margin-top: 20px;
-    background-color: #4CAF50;
-    color: white;
+  margin-top: 20px;
+  background-color: #4CAF50;
+  color: white;
 }
 
-/* General container for the game */
+/* Algemene container voor het spel */
 .game-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #2C3E50; /* Color for the large rectangle */
+  background-color: #213744; /* Kleur voor de grote rechthoek */
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -87,24 +87,24 @@
   box-sizing: border-box;
 }
 
-/* Container for the menu */
+/* Container voor het menu */
 .menu-container {
   flex: 1;
   max-width: 200px;
   margin-right: 20px;
 }
 
-/* Container for the grid */
+/* Container voor de grid */
 .grid-container {
   flex: 2;
-  background-color: #34495E; /* Color for the smaller rectangle */
+  background-color: #0F212D; /* Kleur voor de kleinere rechthoek */
   padding: 10px;
   border-radius: 10px;
 }
 
-/* Styling for the grid items (tiles) */
+/* Stijl voor de grid items (tegels) */
 .grid-container .MuiGrid-item .MuiButton-root {
-  background-color: #1ABC9C; /* Color for the individual tiles */
+  background-color: #1ABC9C; /* Kleur voor de individuele tegels */
   color: #FFFFFF;
   border-radius: 5px;
   height: 80px;
@@ -114,8 +114,55 @@
   font-size: 24px;
 }
 
-/* Styling for when the game is over */
+/* Stijl voor wanneer het spel voorbij is */
 .grid-container .MuiGrid-item .MuiButton-root:disabled {
   background-color: #E74C3C;
   color: #FFFFFF;
 }
+
+/* Toegevoegde stijlen voor het Bet Amount veld */
+.bet-amount-container {
+  margin-bottom: 15px;
+}
+
+.bet-amount-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.bet-amount-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* Stijlen voor de knop 'Pick random tile' */
+.random-tile-button {
+  margin-top: 15px;
+  background-color: #3498DB;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Inactieve Cashout knop */
+.cashout-button-disabled {
+  background-color: #7f8c8d;
+  color: #bdc3c7;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: not-allowed;
+}
+
+/* Actieve Cashout knop */
+.cashout-button-active {
+  background-color: #2ecc71;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
